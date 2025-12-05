@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link rel="stylesheet" href="style.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+
+        <div class="search-section">
+            <label for="alcohol_select">choose your available alcohol type:</label>
+            <select id="alcohol_select" class="search__dropdown">
+                <option value="">-- Välj en alkohol --</option>
+                <option value="Vodka">Vodka</option>
+                <option value="Gin">Gin</option>
+                <option value="Rum">Rum</option>
+                <option value="Tequila">Tequila</option>
+                <option value="Whiskey">Whiskey</option>
+                <option value="Bourbon">Bourbon</option>
+                <option value="Brandy">Brandy</option>
+                <option value="Scotch">Scotch</option>
+                <option value="Champagne">Champagne</option>
+                <option value="Wine">Wine</option>
+            </select>
+            
+            <button id="search_button" class="btn">Get random recipe</button>
+        </div>
+
+        <div class="recipe-container" id="recipe-container">
+            <h2 class="recipe__drink-name" id="drink-name"></h2>
+            <h3 class="recipe__ingredients" id="ingredients">Ingredients</h3>
+            <ul class="recipe__ingredients-list" id="ingredients-list"></ul>
+            <h3 class="recipe__instructions" id="instructions">Instructions</h3>
+            <p class="recipe__instructions-text" id="instructions-text"></p>
+        </div>
+
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
