@@ -1,4 +1,3 @@
-
 //---- URL ----//
 const base_url = 'https://www.thecocktaildb.com/api/json/v1/1';
 
@@ -8,20 +7,8 @@ const search_button = document.getElementById('search_button');
 const recipe_container = document.getElementById('recipe-container');
 
 
-//---- FUNKTIONER ----//
-function insertText(element_id, text){
-
-    const element = document.getElementById(element_id);
-
-    if (element.textContent === '') {
-        element.textContent = text;
-    } else {
-        element.textContent = text;
-    }
-}
-
+//---- FUNCTIONS ----//
 function get_ingredients_array(drink) {
-
     const ingredients = [];
     for (let i = 1; i <= 15; i++) {
         const ingredient = drink[`strIngredient${i}`];
@@ -34,87 +21,79 @@ function get_ingredients_array(drink) {
             });
         }
     }
+    
     const ingredients_list = ingredients
-    .map(ing => `<li>${ing.measure} ${ing.name}</li>`)
-    .join('');
+        .map(ing => `<li>${ing.measure} ${ing.name}</li>`)
+        .join('');
 
     return ingredients_list;
 }
 
+async function fetch_drinks_by_alcohol(alcohol) {
+    const url = `${base_url}/filter.php?i=${alcohol}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.drinks;          
+}
+
+async function fetch_drink_details(drinkId) {
+    const url = `${base_url}/lookup.php?i=${drinkId}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.drinks[0];
+}
 
 
-search_button.addEventListener('click', () => {
+//---- EVENT LISTENER ----//
+search_button.addEventListener('click', async () => {
     
-    
-    const get_drink = async () => {
+    try {
+        //1. Get chosen alcohol
+        const alcohol_type = alcohol_select.value;
         
-        try {
-            
-            //1. Tar fram drinkar som innehåller vald alkohol
-
-
-                const alcohol_type = alcohol_select.value;
-                const filter_url_part = '/filter.php?i=';
-                const filter_url = base_url + filter_url_part + alcohol_type;
-                
-                const drinks_response = await fetch(filter_url);
-                let drinks = await drinks_response.json();
-                drinks = drinks.drinks;
-                
-                console.log('Vald alkohol:', alcohol_select.value);
-                console.log("1. drinkar med vald alkohol: ", drinks);
-
-
-                //2. Slumpar fram en av drinkarna
-                const random_index = Math.floor(Math.random() * drinks.length);
-                const drink_id = drinks[random_index]['idDrink'];
-                
-                console.log("2. random_index: " + random_index);
-                console.log("2. Drink id: " + drink_id);
-
-
-            //3. Hämta info om valda drinken
-            const lookup_url_part = '/lookup.php?i=';
-            const lookup_url = base_url + lookup_url_part + drink_id;
-
-            const details_response = await fetch(lookup_url);
-            let drink = await details_response.json();
-            drink = drink.drinks[0];
-
-            console.log("3. Drink details: " + drink.strDrink);
-            console.log(drink);
-
-
-            console.log(drink.strIngredient1);
-            
-            //Gör en sammansatt array med unitz och ingredient
-            const ingredients_list = get_ingredients_array(drink);
-            console.log("array: " + ingredients_list);
-            
-
-
-            //Bygg upp elementen i html documentet
-            recipe_container.innerHTML = `
-                <h2>${drink.strDrink}</h2>
-
-                <h3 class="recipe__ingredients" id="ingredients">Ingredients</h3>
-                <ul class="recipe__ingredients-list" id="ingredients-list">
-                    ${ingredients_list}
-                </ul>
-
-                <h3 class="recipe__instructions" id="instructions">Instructions</h3>
-                <p class="recipe__instructions-text" id="instructions-text">${drink.strInstructions}</p>
-            `;
-
-
-            
-
-        } catch (e) {
-
-            console.error(e);
+        if (!alcohol_type) {
+            alert('Välj en alkohol först!');
+            return;
         }
-    };
+        
+        console.log('Vald alkohol:', alcohol_type);
+        
+        //2. Get drinkS with chosen alcohol
+        const drinks = await fetch_drinks_by_alcohol(alcohol_type);
+        console.log("1. drinkar med vald alkohol:", drinks);
 
-    get_drink();
+        //3. Get ramdomize drink id
+        const random_index = Math.floor(Math.random() * drinks.length);
+        const drink_id = drinks[random_index].idDrink;
+        
+        console.log(`2. random_index: ${random_index}, drink id: ${drink_id}`);
 
+        //4. Get drink-info from id
+        const drink = await fetch_drink_details(drink_id);
+        
+        console.log("3. Drink details:", drink.strDrink);
+        console.log(drink);
+
+        //5. Get list with ingredients wrapped in html <li> tags
+        const ingredients_list = get_ingredients_array(drink);
+        
+        console.log("Ingredienslista:", ingredients_list);
+
+        //6. Display on website
+        recipe_container.innerHTML = `
+            <h2>${drink.strDrink}</h2>
+
+            <h3 class="recipe__ingredients">Ingredients</h3>
+            <ul class="recipe__ingredients-list">
+                ${ingredients_list}
+            </ul>
+
+            <h3 class="recipe__instructions">Instructions</h3>
+            <p class="recipe__instructions-text">${drink.strInstructions}</p>
+        `;
+
+    } catch (e) {
+        console.error('FEL:', e);
+        alert('Något gick fel!');
+    }
 });
