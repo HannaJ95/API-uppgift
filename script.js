@@ -5,8 +5,7 @@ const base_url = 'https://www.thecocktaildb.com/api/json/v1/1';
 //---- DOM ----//
 const alcohol_select = document.getElementById('alcohol_select');
 const search_button = document.getElementById('search_button');
-// const drink_name_element = document.getElementById('drink-name');
-// const ingredients_list = document.getElementById('ingredients-list');
+const recipe_container = document.getElementById('recipe-container');
 
 
 //---- FUNKTIONER ----//
@@ -21,6 +20,27 @@ function insertText(element_id, text){
     }
 }
 
+function get_ingredients_array(drink) {
+
+    const ingredients = [];
+    for (let i = 1; i <= 15; i++) {
+        const ingredient = drink[`strIngredient${i}`];
+        const measure = drink[`strMeasure${i}`];
+        
+        if (ingredient) {
+            ingredients.push({
+                name: ingredient,
+                measure: measure || ''
+            });
+        }
+    }
+    const ingredients_list = ingredients
+    .map(ing => `<li>${ing.measure} ${ing.name}</li>`)
+    .join('');
+
+    return ingredients_list;
+}
+
 
 
 search_button.addEventListener('click', () => {
@@ -31,23 +51,26 @@ search_button.addEventListener('click', () => {
         try {
             
             //1. Tar fram drinkar som innehåller vald alkohol
-            const alcohol_type = alcohol_select.value;
-            const filter_url_part = '/filter.php?i=';
-            const filter_url = base_url + filter_url_part + alcohol_type;
-            
-            const drinks_response = await fetch(filter_url);
-            let drinks = await drinks_response.json();
-            drinks = drinks.drinks;
-            
-            console.log('Vald alkohol:', alcohol_select.value);
-            console.log("1. drinkar med vald alkohol: ", drinks);
 
-            //2. Slumpar fram en av drinkarna
-            const random_index = Math.floor(Math.random() * drinks.length);
-            const drink_id = drinks[random_index]['idDrink'];
-            
-            console.log("2. random_index: " + random_index);
-            console.log("2. Drink id: " + drink_id);
+
+                const alcohol_type = alcohol_select.value;
+                const filter_url_part = '/filter.php?i=';
+                const filter_url = base_url + filter_url_part + alcohol_type;
+                
+                const drinks_response = await fetch(filter_url);
+                let drinks = await drinks_response.json();
+                drinks = drinks.drinks;
+                
+                console.log('Vald alkohol:', alcohol_select.value);
+                console.log("1. drinkar med vald alkohol: ", drinks);
+
+
+                //2. Slumpar fram en av drinkarna
+                const random_index = Math.floor(Math.random() * drinks.length);
+                const drink_id = drinks[random_index]['idDrink'];
+                
+                console.log("2. random_index: " + random_index);
+                console.log("2. Drink id: " + drink_id);
 
 
             //3. Hämta info om valda drinken
@@ -58,15 +81,32 @@ search_button.addEventListener('click', () => {
             let drink = await details_response.json();
             drink = drink.drinks[0];
 
-            console.log("3. Drink details: " + drink['strDrink']);
+            console.log("3. Drink details: " + drink.strDrink);
             console.log(drink);
 
 
-            const drink_name = drink['strDrink'];
-            const drink_instructions = drink['strInstructions'];
+            console.log(drink.strIngredient1);
+            
+            //Gör en sammansatt array med unitz och ingredient
+            const ingredients_list = get_ingredients_array(drink);
+            console.log("array: " + ingredients_list);
+            
 
-            insertText('drink-name', drink_name);
-            insertText('instructions-text', drink_instructions);
+
+            //Bygg upp elementen i html documentet
+            recipe_container.innerHTML = `
+                <h2>${drink.strDrink}</h2>
+
+                <h3 class="recipe__ingredients" id="ingredients">Ingredients</h3>
+                <ul class="recipe__ingredients-list" id="ingredients-list">
+                    ${ingredients_list}
+                </ul>
+
+                <h3 class="recipe__instructions" id="instructions">Instructions</h3>
+                <p class="recipe__instructions-text" id="instructions-text">${drink.strInstructions}</p>
+            `;
+
+
             
 
         } catch (e) {
