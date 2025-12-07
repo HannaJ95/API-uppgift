@@ -8,7 +8,7 @@ const recipe_container = document.getElementById('recipe-container');
 
 
 //---- FUNCTIONS ----//
-function get_ingredients_array(drink) {
+function get_ingredients_and_measure(drink) {
     const ingredients = [];
     for (let i = 1; i <= 15; i++) {
         const ingredient = drink[`strIngredient${i}`];
@@ -21,7 +21,10 @@ function get_ingredients_array(drink) {
             });
         }
     }
-    
+    return ingredients;
+}
+
+function build_ingredients_html(ingredients) {
     const ingredients_list = ingredients
         .map(ing => `<li>${ing.measure} ${ing.name}</li>`)
         .join('');
@@ -32,15 +35,13 @@ function get_ingredients_array(drink) {
 async function fetch_drinks_by_alcohol(alcohol) {
     const url = `${base_url}/filter.php?i=${alcohol}`;
     const response = await fetch(url);
-    const data = await response.json();
-    return data.drinks;          
+    return (await response.json()).drinks;
 }
 
 async function fetch_drink_details(drinkId) {
     const url = `${base_url}/lookup.php?i=${drinkId}`;
     const response = await fetch(url);
-    const data = await response.json();
-    return data.drinks[0];
+    return (await response.json()).drinks[0];
 }
 
 
@@ -49,17 +50,22 @@ search_button.addEventListener('click', async () => {
     
     try {
         //1. Get chosen alcohol
-        const alcohol_type = alcohol_select.value;
-        
-        if (!alcohol_type) {
+        const alcohol = alcohol_select.value;
+
+        if (!alcohol) {
             alert('Välj en alkohol först!');
             return;
         }
         
-        console.log('Vald alkohol:', alcohol_type);
+        console.log('Vald alkohol:', alcohol);
         
         //2. Get drinkS with chosen alcohol
-        const drinks = await fetch_drinks_by_alcohol(alcohol_type);
+        const drinks = await fetch_drinks_by_alcohol(alcohol);
+
+        if (!drinks || drinks.length === 0) {
+            alert('No drinks found with this alcohol!');
+            return;
+        }
         console.log("1. drinkar med vald alkohol:", drinks);
 
         //3. Get ramdomize drink id
@@ -75,9 +81,10 @@ search_button.addEventListener('click', async () => {
         console.log(drink);
 
         //5. Get list with ingredients wrapped in html <li> tags
-        const ingredients_list = get_ingredients_array(drink);
+        const ingredients_and_measure = get_ingredients_and_measure(drink);
+        const ingredients_html_list = build_ingredients_html(ingredients_and_measure);
         
-        console.log("Ingredienslista:", ingredients_list);
+        console.log("Ingredienslista:", ingredients_and_measure);
 
         //6. Display on website
         recipe_container.innerHTML = `
@@ -85,7 +92,7 @@ search_button.addEventListener('click', async () => {
 
             <h3 class="recipe__ingredients">Ingredients</h3>
             <ul class="recipe__ingredients-list">
-                ${ingredients_list}
+                ${ingredients_html_list}
             </ul>
 
             <h3 class="recipe__instructions">Instructions</h3>
@@ -94,6 +101,6 @@ search_button.addEventListener('click', async () => {
 
     } catch (e) {
         console.error('FEL:', e);
-        alert('Något gick fel!');
+        alert('Something went wrong! Please try again.');
     }
 });
