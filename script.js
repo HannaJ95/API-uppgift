@@ -132,12 +132,12 @@ search_button.addEventListener('click', async () => {
         recipe_container.innerHTML = `
             <h2>${drink.strDrink}</h2>
 
-            <h3 class="recipe__ingredients">Ingredients</h3>
+            <h3 class="recipe__ingredients">Ingredients:</h3>
             <ul class="recipe__ingredients-list">
                 ${ingredients_html_list}
             </ul>
 
-            <h3 class="recipe__instructions">Instructions</h3>
+            <h3 class="recipe__instructions">Instructions:</h3>
             <p class="recipe__instructions-text">${drink.strInstructions}</p>
         `;
 
