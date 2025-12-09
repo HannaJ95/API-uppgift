@@ -1,0 +1,145 @@
+:root {
+    --primary-bg-color: #718960;
+    --secondary-bg-color: #2a381f;
+
+    --primary-text-color: #ddc68b;
+    --secondary-text-color: #2a381f;
+
+    --font-size-medium: 1.5rem;
+
+    --border-radius-large: 2rem;
+    --border-radius-medium: 1rem;
+
+    --text-shadow-headline: 0px 1px 4px #2a5b00;
+
+    /* FONTS */
+    --font-headline: 'Caprasimo';
+    --font-secondary: 'Poppins';
+
+    --padding-small: 1rem 0;
+    --padding-medium: 1rem 0;
+
+    /* SEARCH-SECTION */
+    --background-color-search: #ddc68b;
+    --padding-search: 0.5rem;
+    --border-search: 1px solid #ddc68b;
+
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100vw;
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: var(--primary-bg-color);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+main {
+    width: 90vw;
+    max-width: 700px;
+    height: fit-content;
+    min-width: 300px;
+    min-height: 90vh;
+    padding: 10%;
+    margin: 1rem;
+    border: var(--border-search);
+
+    border-radius: var(--border-radius-large);
+
+    background-color: var(--secondary-bg-color);
+    /* background-image: radial-gradient(circle, white 1px, transparent 1px); */
+    background-size: 20px 20px;
+    /* box-shadow: 0px 1px 20px 0px #505050; */
+}
+
+h1 {
+    color: var(--primary-text-color);
+    margin-bottom: 5vw;
+    font-family: var(--font-headline);
+    /* text-shadow: 0px 1px 4px #3c3c3c; */
+}
+
+/*** SEARCH SECTION ***/
+.search__dropdown {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-medium);
+    color: var(--secondary-text-color);
+    font-weight: 600;
+
+    background-color: var(--background-color-search);
+
+    border-radius: var(--border-radius-medium);
+    margin: 1rem;
+    padding: 0.5rem;
+    text-align: center;  
+    
+    border: var(--border-search);
+}
+
+
+
+.btn {
+    font-size: var(--font-size-medium);
+    padding: var(--padding-search);
+    border-radius: var(--border-radius-medium);
+    background-color: var(--background-color-search);
+    border: var(--border-search);
+    color: var(--secondary-text-color);
+    font-weight: 600;
+}
+
+/*** RECIPE SECTION ***/
+.recipe-container{
+    /* font-family: var(--font-headline); */
+    font-family: 'Poppins';
+    color: var(--primary-text-color);
+    margin-top: 1rem;
+    text-align:start;
+}
+
+h2 {
+    /* text-shadow: var(--text-shadow-headline); */
+    padding: var(--padding-medium);
+}
+
+h3 {
+    /* text-shadow: var(--text-shadow-headline); */
+    padding: var(--padding-small);
+}
+
+.recipe__ingredients-list {
+    /* text-shadow: var(--text-shadow-headline); */
+}
+
+li {
+    /* text-shadow: var(--text-shadow-headline); */
+    list-style: none;
+}
+
+.recipe__instructions-text{
+    /* text-shadow: var(--text-shadow-headline); */
+}
+
+
+@media (min-width: 800px) {
+
+    main {
+        padding: 3rem;
+        /* min-width: fit-content;
+        max-width: 900px; */
+        max-width: 80vw;
+    }
+    h1 {
+        margin-bottom: 2rem;
+    }
+}
