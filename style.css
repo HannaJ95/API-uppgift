@@ -8,6 +8,7 @@
     --border-radius-medium: 1rem;
 
     /* FONTS */
+    --font-size-small: 1rem;
     --font-size-medium: 1.5rem;
 
     --font-headline: 'Caprasimo';
@@ -68,7 +69,7 @@ h1 {
 /*** SEARCH SECTION ***/
 .search__dropdown {
     font-family: var(--font-secondary);
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-small);
     color: var(--primary-bg-color);
     font-weight: 600;
 
@@ -89,7 +90,7 @@ h1 {
 }
 
 .btn {
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-small);
     padding: 0.6rem;
     border-radius: var(--border-radius-medium);
     background-color: var(--light-color);
@@ -120,6 +121,12 @@ h3 {
 
 li {
     list-style: none;
+}
+
+@media (min-width: 470px) {
+    .btn, .search__dropdown {
+        font-size: var(--font-size-medium);
+    }
 }
 
 @media (min-width: 800px) {
